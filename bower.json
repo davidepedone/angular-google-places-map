@@ -1,0 +1,23 @@
+{
+  "name": "angular-google-places-map",
+  "version": "1.0.0",
+  "authors": [
+    "Davide Pedone <davide.pedone@gmail.com>"
+  ],
+  "description": "Todo",
+  "keywords": [
+    "angular",
+    "google maps"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.x"
+  }
+}
