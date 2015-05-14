@@ -31,7 +31,7 @@
 			restrict:'E',
 			replace: true,
 			scope:{
-				placesMapOnUpdate: '&?',
+				customCallback: '&?',
 				picked: '=?',
 				address: '=?',
 				fallback: '=?'
@@ -48,7 +48,7 @@
 				var providedAddress = {};
 				if( $scope.address ){
 					providedAddress = $scope.address;
-					mapOptions.zoom = 15;
+					mapOptions.zoom = $scope.address.zoom || 15;
 				}
 
 				var fallbackAddress = {};
@@ -96,7 +96,7 @@
 						map.fitBounds( place.geometry.viewport );
 					}else{
 						map.setCenter( place.geometry.location  );
-						map.setZoom(15);
+						map.setZoom( ( $scope.address && $scope.address.zoom ) ? $scope.address.zoom : 15 );
 					}
 					// # Update marker
 					marker.setIcon({
@@ -127,10 +127,12 @@
 
 					// # Update scope var (if any)
 					$scope.picked = place;
-					$scope.$apply();
 
 					// # Execute callback function (if any)
-					$scope.placesMapOnUpdate( place );
+					$scope.customCallback( { pickedPlace : place } );
+
+					// # Apply
+					$scope.$apply();
 				};
 
 				var locationChange = function(){

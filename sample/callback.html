@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sample Page</title>
+    <title>Custom Callback</title>
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
     <script src="../bower_components/angular/angular.js"></script>
@@ -12,12 +12,19 @@
     <link href="../dist/css/ngplacesmap.min.css" media="all" rel="stylesheet" />
 
 </head>
-<body>
-    <h1>Sample Page</h1>
+<body ng-controller="MainCtrl">
+    <h1>Custom Callback</h1>
 
-    <places-map></places-map>
+    <places-map custom-callback="customCallbackFunction( pickedPlace )"></places-map>
+
     <script>
-        angular.module('sample', ['ngPlacesMap']);
+        angular.module('sample', ['ngPlacesMap'])
+        .controller('MainCtrl', function ( $scope ) {  
+	        $scope.customCallbackFunction = function( pickedPlace ){
+	        	console.log( pickedPlace );
+	        }
+        });
+
     </script>
 </body>
 </html>

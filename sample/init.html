@@ -15,20 +15,21 @@
 <body ng-controller="MainCtrl">
     <h1>Init with Address</h1>
 
-    <places-map address="address"></places-map>
+    <places-map address="initAddress"></places-map>
 
     <script>
         angular.module('sample', ['ngPlacesMap'])
         .controller('MainCtrl', function ( $scope ) {
             
-            $scope.address = {
+            $scope.initAddress = {
             	place_id : "ChIJ31GTk67GhkcRPw6Nl8LeRdQ",
             	geometry : {
             		location : {
             			A : 45.464679,
             			F : 9.190770100000009
             		}
-            	}
+            	},
+                zoom: 20
             };
         });
 
