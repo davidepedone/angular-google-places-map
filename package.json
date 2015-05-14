@@ -5,9 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:davidepedone/angular-google-places-map.git"
+  },
   "keywords": [
     "angular",
-    "google maps"
+    "google maps",
+    "autocomplete"
   ],
   "author": "Davide Pedone <davide.pedone@gmail.com>",
   "license": "MIT",
@@ -17,9 +22,7 @@
     "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-watch": "~0.6.1",
     "load-grunt-tasks": "~3.1.0",
-    "grunt-contrib-clean": "~0.6.0"
-  },
-  "dependencies": {
+    "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-less": "~1.0.1"
   }
 }

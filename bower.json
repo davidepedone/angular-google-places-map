@@ -4,10 +4,15 @@
   "authors": [
     "Davide Pedone <davide.pedone@gmail.com>"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:davidepedone/angular-google-places-map.git"
+  },
   "description": "AngularJS directive for google maps and places autocomplete",
   "keywords": [
     "angular",
-    "google maps"
+    "google maps",
+    "autocomplete"
   ],
   "license": "MIT",
   "ignore": [
