@@ -4,7 +4,7 @@
   "authors": [
     "Davide Pedone <davide.pedone@gmail.com>"
   ],
-  "description": "Todo",
+  "description": "AngularJS directive for google maps and places autocomplete",
   "keywords": [
     "angular",
     "google maps"

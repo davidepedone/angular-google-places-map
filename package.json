@@ -1,7 +1,6 @@
 {
   "name": "angular-google-places-map",
   "version": "1.0.0",
-  "description": "Todo",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
