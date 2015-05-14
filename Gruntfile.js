@@ -16,11 +16,26 @@ module.exports = function (grunt) {
 
 		clean: {
             js: [ 'dist/js' ],
+            css: [ 'dist/css' ],
             build: [ 'dist/' ]
 		},
-
+        less: {
+        	dist:{
+	            options: {
+	                paths: [ "less" ],
+	                compress: true
+	            },
+	            files: {
+	                "dist/css/ngplacesmap.min.css": [ "src/less/ngplacesmap.less" ]
+	            }
+        	}
+        },
 		uglify: {
 			dist: {
+                // options:{
+                //     beautify: true,
+                //     compress: false
+                // },
 				files: {
 					'dist/js/ngplacesmap.min.js': ['src/js/ngplacesmap.js']
 				}
@@ -36,11 +51,15 @@ module.exports = function (grunt) {
             js: {
                 files: 'src/js/*.js',
                 tasks: [ 'clean:js', 'jshint', 'uglify' ]
+            },
+            css:{
+                files: 'src/less/*.less',
+                tasks: [ 'clean:css', 'less']
             }
         }
 	});
 
-	grunt.registerTask('build', ['clean:build', 'jshint:js', 'uglify']);
+	grunt.registerTask('build', ['clean:build', 'less', 'jshint', 'uglify']);
 
 	grunt.registerTask('default', ['build']);
 };

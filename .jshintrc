@@ -1,0 +1,24 @@
+{
+  "curly"   : true,
+  "eqeqeq"  : true,
+  "undef"   : true,
+  "node"	: true,
+  "-W069" : true,
+  "-W116" : true,
+  "-W041" : true,
+  "-W048" : true,
+  "-W004" : true,
+  // global variables
+  "globals": {
+    "angular"   : false,
+    "navigator" : false,
+    "window"	: false,
+    "google"	: false,
+    "jasmine"   : false,
+    "$"         : false,
+    "_"         : false,
+    "module"    : false,
+    "require"   : false,
+    "alert"		: false
+  }
+}

@@ -19,5 +19,8 @@
     "grunt-contrib-watch": "~0.6.1",
     "load-grunt-tasks": "~3.1.0",
     "grunt-contrib-clean": "~0.6.0"
+  },
+  "dependencies": {
+    "grunt-contrib-less": "~1.0.1"
   }
 }
