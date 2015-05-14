@@ -2,6 +2,7 @@
 
 Angular directive for Google Places Autocomplete created putting together code from [this package](https://github.com/kuhnza/angular-google-places-autocomplete) and [this sample code](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete).
 
+This directive provides the autocomplete function from Google Places Autocomplete library and shows picked location on a map.
 ## How to use
 Install agular-google-places-map as a bower package, with:
 ```bash
