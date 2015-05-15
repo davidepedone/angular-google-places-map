@@ -6,7 +6,7 @@
   ],
   "main": [
       "./src/js/ngplacesmap.js",
-      "./dist/js/ngplacesmap.min.js",
+      "./dist/js/ngplacesmap.min.js"
   ],
   "repository": {
     "type": "git",
