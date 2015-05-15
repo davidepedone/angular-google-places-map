@@ -4,6 +4,10 @@
   "authors": [
     "Davide Pedone <davide.pedone@gmail.com>"
   ],
+  "main": [
+      "./src/js/ngplacesmap.js",
+      "./dist/js/ngplacesmap.min.js",
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:davidepedone/angular-google-places-map.git"
