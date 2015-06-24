@@ -25,7 +25,17 @@
 
 
  	angular.module('ngPlacesMap', [])
-
+	.filter('gps', function() {
+		return function(input,field) {
+			var json;
+			try{
+				json = JSON.parse(input);
+			}catch(e){
+				json = false;
+			}
+			return json && json[field] ? json[field] : '';
+		};
+	})
 	.directive( 'placesMap', function(){
 		return {
 			restrict:'E',
@@ -34,7 +44,10 @@
 				customCallback: '&?',
 				picked: '=?',
 				address: '=?',
-				fallback: '=?'
+				fallback: '=?',
+				mapType: '@?',
+				readonly: '@?',
+				responsive: '@?'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
@@ -61,11 +74,21 @@
 					mapOptions.zoom = $scope.fallback.zoom || 5;
 				}
 
+				// # Set map type if provided
+				if( $scope.mapType && google.maps.MapTypeId[$scope.mapType] ){
+					mapOptions.mapTypeId = google.maps.MapTypeId[$scope.mapType];
+				}
+
 				// # Get place from coords and Set map center
 				mapOptions.center = getLocation( providedAddress, fallbackAddress );
 				
 				var canvas = element.find('div')[0];
 				var input = element.find('input')[0];
+
+				if( $scope.responsive && $scope.responsive == 'true' ){
+					canvas.className += ' responsive';
+				}
+
 				// # Create map
 				var map = new google.maps.Map( canvas, mapOptions );
 
@@ -78,7 +101,12 @@
 				var infowindow = new google.maps.InfoWindow();
 
 				// # Place input field
-				map.controls[ google.maps.ControlPosition.TOP_LEFT ].push( input );
+				if( !$scope.readonly ){
+					map.controls[ google.maps.ControlPosition.TOP_LEFT ].push( input );
+				}else{
+					input.style.display = 'none';
+				}
+
 				// # Add autocomplete
 				var autocomplete = new google.maps.places.Autocomplete( input );
 				autocomplete.bindTo('bounds', map);
@@ -164,6 +192,13 @@
 
 				// # Autocomplete listener
 				google.maps.event.addListener( autocomplete, 'place_changed', locationChange );
+
+				// # Responsive utils listener
+				google.maps.event.addDomListener(window, "resize", function() {
+					var center = map.getCenter();
+					google.maps.event.trigger(map, "resize");
+					map.setCenter(center); 
+				});
 			}
 		};
 	});
