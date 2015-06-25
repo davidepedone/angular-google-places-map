@@ -47,7 +47,8 @@
 				fallback: '=?',
 				mapType: '@?',
 				readonly: '@?',
-				responsive: '@?'
+				responsive: '@?',
+				draggable: '@?'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
@@ -55,7 +56,7 @@
 			link: function( $scope, element, attrs, controller ){
 
 				var mapOptions = {
-					zoom : 5
+					zoom : 5,
 				};
 
 				var providedAddress = {};
@@ -72,6 +73,11 @@
 				if( $scope.fallback ){
 					fallbackAddress = $scope.fallback;
 					mapOptions.zoom = $scope.fallback.zoom || 5;
+				}
+
+				if( $scope.draggable && $scope.draggable == 'false'){
+					mapOptions.draggable = false;
+					mapOptions.scrollwheel = false;
 				}
 
 				// # Set map type if provided
