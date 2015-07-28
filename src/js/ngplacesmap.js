@@ -48,12 +48,21 @@
 				mapType: '@?',
 				readonly: '@?',
 				responsive: '@?',
-				draggable: '@?'
+				draggable: '@?',
+				toggleMapDraggable: '=',
+				placeNotFound: '=?'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
 			
 			link: function( $scope, element, attrs, controller ){
+
+				var isCurrentlyDraggable = $scope.draggable == 'true';
+
+				$scope.toggleMapDraggable = function(draggable){
+					isCurrentlyDraggable = draggable;
+					map.setOptions({draggable:isCurrentlyDraggable,scrollwheel:isCurrentlyDraggable});
+				};
 
 				var mapOptions = {
 					zoom : 5,
@@ -98,6 +107,12 @@
 				// # Create map
 				var map = new google.maps.Map( canvas, mapOptions );
 
+				// # Init place service
+				var placeService = new google.maps.places.PlacesService( map );
+
+				// # Init geocoder service
+				var geocoder = new google.maps.Geocoder();
+
 				// # Prepare Marker
 				var marker = new google.maps.Marker({
 					map: map,
@@ -117,11 +132,15 @@
 				var autocomplete = new google.maps.places.Autocomplete( input );
 				autocomplete.bindTo('bounds', map);
 
-				var placeMarker = function( place ){
+				var placeAutocompleteMarker = function( place, customAddress, executeCallback ){
 
 					// # Get geometry
 					if( !place.geometry ){
-						alert('Pick a valid location');
+						if(typeof $scope.placeNotFound == 'function'){
+							$scope.placeNotFound();
+						}else{
+							alert('Pick a valid location');
+						}
 						return;
 					}
 
@@ -140,33 +159,124 @@
 						anchor: new google.maps.Point( 17, 34 ),
 						scaledSize: new google.maps.Size( 35, 35 )
 					});
-					// # Place marker
-					marker.setPosition( place.geometry.location );
-					// # Show marker
-					marker.setVisible( true );
 
 					var address = '';
-					if( place.address_components ) {
-						address = [
-							(place.address_components[0] && place.address_components[0].short_name || ''),
-							(place.address_components[1] && place.address_components[1].short_name || ''),
-							(place.address_components[2] && place.address_components[2].short_name || '')
-						].join(' ');
+					var infoWindowContent = '';
+
+					if( !customAddress ){
+
+						if( place.address_components ) {
+							address = [
+								(place.address_components[0] && place.address_components[0].short_name || ''),
+								(place.address_components[1] && place.address_components[1].short_name || ''),
+								(place.address_components[2] && place.address_components[2].short_name || '')
+							].join(' ');
+						}
+
+						if( address !== '' ){
+							infoWindowContent = '<div><strong>' + place.name + '</strong><br>' + address + '</div>';
+						}
+
+					}else{
+
+						infoWindowContent = providedAddress;
+						place.geometry.address = providedAddress;
+						place.formatted_address = providedAddress;
+
 					}
 
-					if( address !== '' ){
-						infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address + '</div>');
+					updateMapAndScope( place.geometry.location, infoWindowContent, place, executeCallback );
+				};
+
+				var placeMarker = function( location, customAddress, executeCallback ){
+					// # Build LatLng
+					var latlng = new google.maps.LatLng(location.A, location.F);
+
+					// # Close info window
+					infowindow.close();
+
+					// # Build place object
+					var place = {};
+					place.place_id = null;
+					place.geometry = {};
+					place.geometry.location = {
+						A : location.A,
+						F : location.F
+					};
+					var infoWindowContent = '';
+
+					// # If customAddress is not provided query API, else just show
+					// # provided information
+					if( !customAddress ){
+
+						// # Query maps api
+						geocoder.geocode( {'location' : latlng}, function( result, status ){	
+
+							var address = '';
+
+							if( status === google.maps.GeocoderStatus.OK && result[0]){
+								if( result[0].address_components ) {
+									address = [
+										(result[0].address_components[0] && result[0].address_components[0].short_name || ''),
+										(result[0].address_components[1] && result[0].address_components[1].short_name || ''),
+										(result[0].address_components[2] && result[0].address_components[2].short_name || '')
+									].join(' ');
+								}
+							}
+
+							if( address !== '' ){
+								infoWindowContent = '<div><strong>' + address + '</strong></div>';
+							}else{
+								address = location.A + ', ' + location.F;
+							}
+
+							place.geometry.address = address;
+							place.formatted_address = address;
+
+							marker.setPosition( location );
+							marker.setVisible( true );
+
+							updateMapAndScope( location, infoWindowContent, place, executeCallback );
+
+						});
+
+					}else{
+						infoWindowContent = providedAddress;
+						place.geometry.address = providedAddress;
+						place.formatted_address = providedAddress;
+
+						updateMapAndScope( location, infoWindowContent, place, executeCallback );
+					}
+
+				};
+
+				var updateMapAndScope = function( location, infoWindowContent, place, executeCallback ){
+
+					// # Hide marker and info window
+					infowindow.close();
+					marker.setVisible( false );
+
+					// # Update and show info window if has content
+					if( infoWindowContent !== '' ){
+						infowindow.setContent( infoWindowContent );
 						infowindow.open( map, marker );
 					}
+
+					// # Update and show marker
+					marker.setPosition( location );
+					marker.setVisible( true );
 
 					// # Update scope var (if any)
 					$scope.picked = place;
 
-					// # Execute callback function (if any)
-					$scope.customCallback( { pickedPlace : place } );
+					if( executeCallback ){					
+						// # Execute callback function (if any)
+						$scope.customCallback( { pickedPlace : place } );
+					}
 
 					// # Apply
 					$scope.$apply();
+
 				};
 
 				var locationChange = function(){
@@ -176,14 +286,11 @@
 
 					// # Get place from autocomplete
 					var place = autocomplete.getPlace();
-					placeMarker( place );
+					placeAutocompleteMarker( place, null, true );
 
 				};
 
 				// # Create marker for saved position
-
-				// # Init place service
-				var placeService = new google.maps.places.PlacesService( map );
 
 				// # If providedAddress has a place_id, use placeService to retrieve information
 				if( providedAddress.place_id ){
@@ -191,9 +298,18 @@
 					placeService.getDetails({placeId: providedAddress.place_id},function( place, status ){
 						if( status === google.maps.places.PlacesServiceStatus.OK ){
 							// # Place marker
-							placeMarker( place );
+							placeAutocompleteMarker( place, providedAddress.geometry.address, false );
 						}
 					});
+				}else{
+					// # Just place a pin
+					var latlng = new google.maps.LatLng(providedAddress.geometry.location.A, providedAddress.geometry.location.F);
+					geocoder.geocode({'location':latlng}, function( result, status ){
+						if( status === google.maps.GeocoderStatus.OK ){
+							placeMarker( result[0].geometry.location, providedAddress.geometry.address, false );
+						}
+					});
+					
 				}
 
 				// # Autocomplete listener
@@ -204,6 +320,12 @@
 					var center = map.getCenter();
 					google.maps.event.trigger(map, "resize");
 					map.setCenter(center); 
+				});
+
+				google.maps.event.addListener(map, 'click', function(evt) {
+					if(isCurrentlyDraggable){
+						placeMarker( evt.latLng, null, true );
+					}
 				});
 			}
 		};
