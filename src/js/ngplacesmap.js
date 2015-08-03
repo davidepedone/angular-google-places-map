@@ -49,7 +49,7 @@
 				readonly: '@?',
 				responsive: '@?',
 				draggable: '@?',
-				toggleMapDraggable: '=',
+				toggleMapDraggable: '=?',
 				placeNotFound: '=?'
 			},
 			controller: ['$scope', function ($scope) {}],
