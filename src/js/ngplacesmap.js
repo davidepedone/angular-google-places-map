@@ -301,7 +301,7 @@
 							placeAutocompleteMarker( place, providedAddress.geometry.address, false );
 						}
 					});
-				}else{
+				}else if(providedAddress.hasOwnProperty('geometry')){
 					// # Just place a pin
 					var latlng = new google.maps.LatLng(providedAddress.geometry.location.A, providedAddress.geometry.location.F);
 					geocoder.geocode({'location':latlng}, function( result, status ){
