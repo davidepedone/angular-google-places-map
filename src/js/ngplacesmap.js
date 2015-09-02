@@ -50,7 +50,8 @@
 				responsive: '@?',
 				draggable: '@?',
 				toggleMapDraggable: '=?',
-				placeNotFound: '=?'
+				placeNotFound: '=?',
+				updateMarkerLabel: '=?'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
@@ -62,6 +63,10 @@
 				$scope.toggleMapDraggable = function(draggable){
 					isCurrentlyDraggable = draggable;
 					map.setOptions({draggable:isCurrentlyDraggable,scrollwheel:isCurrentlyDraggable});
+				};
+
+				$scope.updateMarkerLabel = function(label){
+					infowindow.setContent( label );
 				};
 
 				var mapOptions = {
@@ -179,7 +184,7 @@
 
 					}else{
 
-						infoWindowContent = providedAddress;
+						infoWindowContent = customAddress;
 						place.geometry.address = providedAddress;
 						place.formatted_address = providedAddress;
 
@@ -241,7 +246,7 @@
 						});
 
 					}else{
-						infoWindowContent = providedAddress;
+						infoWindowContent = customAddress;
 						place.geometry.address = providedAddress;
 						place.formatted_address = providedAddress;
 
@@ -298,7 +303,7 @@
 					placeService.getDetails({placeId: providedAddress.place_id},function( place, status ){
 						if( status === google.maps.places.PlacesServiceStatus.OK ){
 							// # Place marker
-							placeAutocompleteMarker( place, providedAddress.geometry.address, false );
+							placeAutocompleteMarker( place, providedAddress.address, false );
 						}
 					});
 				}else if(providedAddress.hasOwnProperty('geometry')){
@@ -306,7 +311,7 @@
 					var latlng = new google.maps.LatLng(providedAddress.geometry.location.A, providedAddress.geometry.location.F);
 					geocoder.geocode({'location':latlng}, function( result, status ){
 						if( status === google.maps.GeocoderStatus.OK ){
-							placeMarker( result[0].geometry.location, providedAddress.geometry.address, false );
+							placeMarker( result[0].geometry.location, providedAddress.address, false );
 						}
 					});
 					
