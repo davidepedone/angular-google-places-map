@@ -195,7 +195,7 @@
 
 				var placeMarker = function( location, customAddress, executeCallback ){
 					// # Build LatLng
-					var latlng = new google.maps.LatLng(location.A, location.F);
+					var latlng = new google.maps.LatLng(location.lat(), location.lng());
 
 					// # Close info window
 					infowindow.close();
@@ -205,8 +205,8 @@
 					place.place_id = null;
 					place.geometry = {};
 					place.geometry.location = {
-						A : location.A,
-						F : location.F
+						A : location.lat(),
+						F : location.lng()
 					};
 					var infoWindowContent = '';
 
@@ -232,7 +232,7 @@
 							if( address !== '' ){
 								infoWindowContent = '<div><strong>' + address + '</strong></div>';
 							}else{
-								address = location.A + ', ' + location.F;
+								address = location.lat() + ', ' + location.lng();
 							}
 
 							place.geometry.address = address;
