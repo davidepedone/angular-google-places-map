@@ -51,7 +51,8 @@
 				draggable: '@?',
 				toggleMapDraggable: '=?',
 				placeNotFound: '=?',
-				updateMarkerLabel: '=?'
+				updateMarkerLabel: '=?',
+				redrawMap: '=?'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
@@ -60,14 +61,22 @@
 
 				var isCurrentlyDraggable = $scope.draggable == 'true';
 
-				$scope.toggleMapDraggable = function(draggable){
+				$scope.toggleMapDraggable = function( draggable ){
 					isCurrentlyDraggable = draggable;
 					map.setOptions({draggable:isCurrentlyDraggable,scrollwheel:isCurrentlyDraggable});
 				};
 
-				$scope.updateMarkerLabel = function(label){
+				$scope.updateMarkerLabel = function( label ){
 					infowindow.setContent( label );
 				};
+
+				if( $scope.redrawMap ){
+					$scope.redrawMap.updateMap = function( address ){
+						var latlng = new google.maps.LatLng( address.lat, address.lng );
+						placeMarker( latlng, false, false);
+						map.setCenter( latlng );
+					};
+				}
 
 				var mapOptions = {
 					zoom : 5,
