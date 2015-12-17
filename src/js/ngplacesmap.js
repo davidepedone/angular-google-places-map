@@ -283,6 +283,18 @@
 					// # Update scope var (if any)
 					$scope.picked = place;
 
+					if (!place.geometry.location.lat || typeof place.geometry.location.lat !== 'function'){
+						place.geometry.location.lat = function(){
+							return place.geometry.location.A;
+						};
+					}
+
+					if (!place.geometry.location.lng || typeof place.geometry.location.lng !== 'function'){
+						place.geometry.location.lng = function(){
+							return place.geometry.location.F;
+						};
+					}
+
 					if( executeCallback ){					
 						// # Execute callback function (if any)
 						$scope.customCallback( { pickedPlace : place } );
