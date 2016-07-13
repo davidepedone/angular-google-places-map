@@ -8,6 +8,10 @@ Install agular-google-places-map as a bower package, with:
 ```bash
 bower install --save angular-google-places-map
 ```
+or using npm with:
+```
+npm install --save angular-google-places-map
+```
 and add libraries to your page:
 ```html
 <!-- Google Places API -->
