@@ -1,0 +1,22 @@
+{
+  "name": "angular-google-places-map",
+  "homepage": "https://github.com/davidepedone/angular-google-places-map",
+  "authors": [
+    "Davide Pedone <davide.pedone@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-google-places-map": "^1.2.0"
+  }
+}
