@@ -1,12 +1,12 @@
 {
   "name": "angular-google-places-map",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "authors": [
     "Davide Pedone <davide.pedone@gmail.com>"
   ],
   "main": [
-      "./src/js/ngplacesmap.js",
-      "./dist/js/ngplacesmap.min.js"
+    "./src/js/ngplacesmap.js",
+    "./dist/js/ngplacesmap.min.js"
   ],
   "repository": {
     "type": "git",
