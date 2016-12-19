@@ -52,11 +52,13 @@
 				toggleMapDraggable: '=?',
 				placeNotFound: '=?',
 				updateMarkerLabel: '=?',
-				redrawMap: '=?'
+				redrawMap: '=?',
+				mapOptions: '=?',
+				static: '@'
 			},
 			controller: ['$scope', function ($scope) {}],
 			template: '<div class="dp-places-map-wrapper"><input type="text" class="dp-places-map-input"><div class="dp-places-map-canvas"></div></div>',
-			
+
 			link: function( $scope, element, attrs, controller ){
 
 				var isCurrentlyDraggable = $scope.draggable == 'true';
@@ -78,9 +80,24 @@
 					};
 				}
 
-				var mapOptions = {
-					zoom : 5,
-				};
+				var defaultMapOptions;
+				if ($scope.static && $scope.static == 'true') {
+					defaultMapOptions = {
+						zoom: 5,
+						draggable: false,
+						panControl: false,
+						zoomControl: false,
+						scrollwheel: false,
+						mapTypeControl: false,
+						streetViewControl: false,
+						clickableIcons: false
+					};
+				} else {
+					defaultMapOptions = {zoom: 5};
+				}
+
+
+				var mapOptions = angular.extend(defaultMapOptions, $scope.mapOptions);
 
 				var providedAddress = {};
 				if( $scope.address ){
@@ -95,7 +112,7 @@
 
 				if( $scope.fallback ){
 					fallbackAddress = $scope.fallback;
-					mapOptions.zoom = $scope.fallback.zoom || 5;
+					mapOptions.zoom = $scope.fallback.zoom || mapOptions.zoom;
 				}
 
 				if( $scope.draggable && $scope.draggable == 'false'){
@@ -110,7 +127,7 @@
 
 				// # Get place from coords and Set map center
 				mapOptions.center = getLocation( providedAddress, fallbackAddress );
-				
+
 				var canvas = element.find('div')[0];
 				var input = element.find('input')[0];
 
@@ -224,7 +241,7 @@
 					if( !customAddress ){
 
 						// # Query maps api
-						geocoder.geocode( {'location' : latlng}, function( result, status ){	
+						geocoder.geocode( {'location' : latlng}, function( result, status ){
 
 							var address = '';
 
@@ -295,7 +312,7 @@
 						};
 					}
 
-					if( executeCallback ){					
+					if( executeCallback ){
 						// # Execute callback function (if any)
 						$scope.customCallback( { pickedPlace : place } );
 					}
@@ -335,7 +352,7 @@
 							placeMarker( result[0].geometry.location, providedAddress.address, false );
 						}
 					});
-					
+
 				}
 
 				// # Autocomplete listener
@@ -345,7 +362,7 @@
 				google.maps.event.addDomListener(window, "resize", function() {
 					var center = map.getCenter();
 					google.maps.event.trigger(map, "resize");
-					map.setCenter(center); 
+					map.setCenter(center);
 				});
 
 				google.maps.event.addListener(map, 'click', function(evt) {
